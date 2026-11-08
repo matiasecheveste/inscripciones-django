@@ -37,14 +37,14 @@ class ReglasTests(TestCase):
     def test_cupo_lista_de_espera_y_promocion(self):
         c = curso(cupo=2)
         a, b, x = estudiante(0), estudiante(1), estudiante(2)
-        ia = servicios.inscribir(c.pk, a)
+        primera = servicios.inscribir(c.pk, a)
         servicios.inscribir(c.pk, b)
-        ix = servicios.inscribir(c.pk, x)
-        self.assertEqual(ia.estado, Inscripcion.Estado.CONFIRMADA)
-        self.assertEqual(ix.estado, Inscripcion.Estado.ESPERA)
+        en_espera = servicios.inscribir(c.pk, x)
+        self.assertEqual(primera.estado, Inscripcion.Estado.CONFIRMADA)
+        self.assertEqual(en_espera.estado, Inscripcion.Estado.ESPERA)
 
-        _, promovida = servicios.cancelar(ia.pk)
-        self.assertEqual(promovida.pk, ix.pk)
+        _, promovida = servicios.cancelar(primera.pk)
+        self.assertEqual(promovida.pk, en_espera.pk)
         self.assertEqual(c.total_confirmadas, 2)
 
     def test_cancelar_en_espera_no_promueve(self):
